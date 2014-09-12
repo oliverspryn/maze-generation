@@ -62,12 +62,33 @@ public class Generator : MonoBehaviour {
 			}
 		}
 
-	/**
-	 * Build the maze here... 
-	 * 
-	 * For pseudocode lines 6 and 9, use the helper functions GetUnvisitedNeighbor() and
-	 * DestroyWalls(ref WallA, ref WallB), respeectively.
-	*/
+	//Select a random cell
+		System.Random rand = new System.Random();
+		Current = Cells[rand.Next(X), rand.Next(Y)];
+
+	//Initialize the stack and total number of cells
+		Stack = new Stack<Cell>();
+		Total = X * Y;
+		Visited = 1;
+
+	//Build out the cells
+		List<Cell> unvisited;
+		Cell random;
+
+		while(Visited < Total) {
+			unvisited = GetUnvisitedNeighbor();
+			
+			if(unvisited.Count > 0) {
+				random = unvisited.OrderBy(x => Guid.NewGuid()).First();
+				DestroyWalls(ref Current, ref random);
+
+				Stack.Push(Current);
+				Current = random;
+				++Visited;
+			} else {
+				Current = Stack.Pop();
+			}
+		}
 		
 	//Construct the walls in the game
 		ConstructWalls();
